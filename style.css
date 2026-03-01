@@ -625,19 +625,25 @@ header .subtitle {
 }
 
 #game-modes .mode-descriptions {
-  font-size: 0.82rem;
-  color: #9ca3af;
-  line-height: 1.6;
   margin: 8px 0 0;
   padding-left: 1.2em;
 }
 
 #game-modes .mode-descriptions li {
+  font-size: 0.82rem;
+  color: #6b7280;
+  line-height: 1.6;
   margin-bottom: 10px;
 }
 
 #game-modes .mode-descriptions li:last-child {
   margin-bottom: 0;
+}
+
+#game-modes .mode-descriptions li strong {
+  font-size: inherit;
+  font-weight: 700;
+  color: #d1d5db;
 }
 
 /* ── Legend ────────────────────────────────────────────────────────────────── */
