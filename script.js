@@ -677,19 +677,24 @@ function submitGuess() {
 
 function applyGameMode(mode) {
   gameMode = mode;
-  app.classList.remove("game-mode-einfach", "game-mode-standard", "game-mode-schwer");
-  app.classList.add("game-mode-" + mode);
-  gameModeToggle.querySelectorAll(".mode-opt").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.mode === mode);
-  });
+  if (app) {
+    app.classList.remove("game-mode-einfach", "game-mode-standard", "game-mode-schwer");
+    app.classList.add("game-mode-" + mode);
+  }
+  if (gameModeToggle) {
+    gameModeToggle.querySelectorAll(".mode-opt").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.mode === mode);
+    });
+  }
   localStorage.setItem("ghgdle-game-mode", mode);
-  renderDropdown();
+  if (typeof renderDropdown === "function") renderDropdown();
 }
 
-gameModeToggle.addEventListener("click", (e) => {
-  const btn = e.target.closest(".mode-opt");
-  if (btn) applyGameMode(btn.dataset.mode);
-});
+if (gameModeToggle) {
+  gameModeToggle.querySelectorAll(".mode-opt").forEach((btn) => {
+    btn.addEventListener("click", () => applyGameMode(btn.dataset.mode));
+  });
+}
 
 applyGameMode(localStorage.getItem("ghgdle-game-mode") || "standard");
 
