@@ -18,6 +18,7 @@ const RANGE_KEYS = ["upload_date", "views", "length"];
 let rangeBoundaryIds = { upload_date: new Set(), views: new Set(), length: new Set() };
 let activeDropdownIdx = -1;
 let exactSearchMode = false;
+let gameMode = "standard"; // "einfach" | "standard" | "schwer"
 
 /* ── DOM refs ──────────────────────────────────────────────────────────────── */
 
@@ -29,7 +30,7 @@ const columnHeaders = document.getElementById("column-headers");
 const banner = document.getElementById("banner");
 const countdownArea = document.getElementById("countdown-area");
 const countdownEl = document.getElementById("countdown");
-const advancedModeToggle = document.getElementById("advanced-mode-toggle");
+const gameModeToggle = document.getElementById("game-mode-toggle");
 const searchModeToggle = document.getElementById("search-mode-toggle");
 
 /* ── Timezone helper: Europe/Berlin ────────────────────────────────────────── */
@@ -114,6 +115,19 @@ function getRangeBoundaryIds(guessesList, target) {
     if (bestAbove) out[key].add(bestAbove.id);
   }
   return out;
+}
+
+function getUploadDateRange(guessesList, target) {
+  const t = getRangeValue(target, "upload_date");
+  let minDate = "";
+  let maxDate = "9999-12-31";
+  for (const g of guessesList) {
+    const v = getRangeValue(g, "upload_date");
+    if (v === t) continue;
+    if (v < t && (minDate === "" || v > minDate)) minDate = v;
+    if (v > t && (maxDate === "9999-12-31" || v < maxDate)) maxDate = v;
+  }
+  return { minDate, maxDate };
 }
 
 /* ── LocalStorage ──────────────────────────────────────────────────────────── */
@@ -426,11 +440,19 @@ function matchesQuery(query, title) {
 }
 
 function getFiltered() {
-  // In exact mode preserve spaces (trailing space is intentional); in token mode trim.
   const raw = input.value;
   const q = exactSearchMode ? raw : raw.trim();
   const guessedIds = new Set(guesses.map((v) => v.id));
-  const pool = videos.filter((v) => !guessedIds.has(v.id));
+  let pool = videos.filter((v) => !guessedIds.has(v.id));
+
+  if (gameMode === "einfach" && targetVideo) {
+    const { minDate, maxDate } = getUploadDateRange(guesses, targetVideo);
+    pool = pool.filter((v) => {
+      const d = v.upload_date || "";
+      return (minDate === "" || d >= minDate) && (maxDate === "9999-12-31" || d <= maxDate);
+    });
+  }
+
   if (!q.trim()) return pool.slice(0, 100);
   return pool.filter((v) => matchesQuery(q, v.title)).slice(0, 100);
 }
@@ -452,6 +474,21 @@ searchModeToggle.addEventListener("click", (e) => {
 
 applySearchMode(false);
 
+function getDropdownMeta(v) {
+  if (gameMode === "schwer") return "";
+  if (gameMode === "einfach") {
+    const parts = [
+      formatDate(v.upload_date),
+      v.zickzack_version || "–",
+      formatViews(v.views) + " Aufrufe",
+      formatDuration(v.length),
+      v.project || "–",
+    ];
+    return parts.join(" · ");
+  }
+  return `${formatDate(v.upload_date)} · ${formatViews(v.views)} Aufrufe · ${formatDuration(v.length)}`;
+}
+
 function renderDropdown() {
   const items = getFiltered();
   if (!items.length || gameOver) {
@@ -463,18 +500,17 @@ function renderDropdown() {
   dropdown.classList.remove("hidden");
   activeDropdownIdx = -1;
 
-  const isAdvanced = app.classList.contains("advanced-mode");
+  const showThumb = gameMode !== "schwer";
+  const meta = getDropdownMeta(items[0]); // same format for all in this mode
 
   dropdown.innerHTML = items
     .map(
       (v, i) =>
         `<div class="dropdown-item" data-id="${v.id}" data-idx="${i}">` +
-        `<img class="dd-thumb" src="${v.thumbnail}" alt="" loading="lazy">` +
+        (showThumb ? `<img class="dd-thumb" src="${v.thumbnail}" alt="" loading="lazy">` : "") +
         `<div class="dd-info">` +
         `<div class="dd-title">${escapeHtml(v.title)}</div>` +
-        (isAdvanced
-          ? ""
-          : `<div class="dd-meta">${formatDate(v.upload_date)} · ${formatViews(v.views)} Aufrufe · ${formatDuration(v.length)}</div>`) +
+        (meta ? `<div class="dd-meta">${getDropdownMeta(v)}</div>` : "") +
         `</div></div>`
     )
     .join("");
@@ -639,20 +675,23 @@ function submitGuess() {
 
 /* ── Advanced mode toggle ──────────────────────────────────────────────────── */
 
-function applyAdvancedMode(on) {
-  app.classList.toggle("advanced-mode", on);
-  advancedModeToggle.querySelectorAll(".mode-opt").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.mode === (on ? "advanced" : "standard"));
+function applyGameMode(mode) {
+  gameMode = mode;
+  app.classList.remove("game-mode-einfach", "game-mode-standard", "game-mode-schwer");
+  app.classList.add("game-mode-" + mode);
+  gameModeToggle.querySelectorAll(".mode-opt").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.mode === mode);
   });
-  localStorage.setItem("ghgdle-advanced-mode", on ? "1" : "0");
+  localStorage.setItem("ghgdle-game-mode", mode);
+  renderDropdown();
 }
 
-advancedModeToggle.addEventListener("click", (e) => {
+gameModeToggle.addEventListener("click", (e) => {
   const btn = e.target.closest(".mode-opt");
-  if (btn) applyAdvancedMode(btn.dataset.mode === "advanced");
+  if (btn) applyGameMode(btn.dataset.mode);
 });
 
-applyAdvancedMode(localStorage.getItem("ghgdle-advanced-mode") === "1");
+applyGameMode(localStorage.getItem("ghgdle-game-mode") || "standard");
 
 document.getElementById("regenerate-btn").addEventListener("click", startNewFreePlay);
 

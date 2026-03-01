@@ -333,8 +333,8 @@ header .subtitle {
   margin-top: 1px;
 }
 
-#app.advanced-mode .dd-thumb,
-#app.advanced-mode .dd-meta { display: none; }
+#app.game-mode-schwer .dropdown-item .dd-thumb,
+#app.game-mode-schwer .dropdown-item .dd-meta { display: none; }
 
 /* ── Column headers ───────────────────────────────────────────────────────── */
 
@@ -622,6 +622,22 @@ header .subtitle {
 
 #info-footer section {
   margin-bottom: 20px;
+}
+
+#game-modes .mode-descriptions {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+#game-modes .mode-descriptions li {
+  margin-bottom: 10px;
+}
+
+#game-modes .mode-descriptions li:last-child {
+  margin-bottom: 0;
 }
 
 /* ── Legend ────────────────────────────────────────────────────────────────── */

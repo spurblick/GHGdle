@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GHGdle</title>
+  <link rel="icon" href="spurblick.png" type="image/png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,9 +19,10 @@
         <div id="header-toggles">
           <div class="toggle-group">
             <span class="toggle-label">Spielmodus</span>
-            <div class="seg-toggle" id="advanced-mode-toggle">
+            <div class="seg-toggle" id="game-mode-toggle">
+              <button class="mode-opt" data-mode="einfach">Einfach</button>
               <button class="mode-opt active" data-mode="standard">Standard</button>
-              <button class="mode-opt" data-mode="advanced">Experte</button>
+              <button class="mode-opt" data-mode="schwer">Schwer</button>
             </div>
           </div>
           <div class="toggle-group">
@@ -116,6 +118,15 @@
             <span>Pfeile zeigen die Richtung an: ▲ = der gesuchte Wert ist höher/neuer, ▼ = niedriger/älter.</span>
           </div>
         </div>
+      </section>
+
+      <section id="game-modes">
+        <h2>Spielmodi</h2>
+        <ul class="mode-descriptions">
+          <li><strong>Einfach:</strong> In der Suche siehst du Thumbnails sowie Upload-Datum, Zickzack, Aufrufe, Länge und Projekt. Es werden nur Videos angezeigt, die im aktuell durch Versuche eingegrenzten Zeitraum liegen – hast du das Ziel z.&nbsp;B. auf 2022–2025 eingegrenzt, erscheinen keine Videos aus 2020.</li>
+          <li><strong>Standard:</strong> In der Suche siehst du Thumbnails sowie Upload-Datum, Aufrufe und Länge. Es werden alle (noch nicht geratenen) Videos angezeigt.</li>
+          <li><strong>Schwer:</strong> In der Suche siehst du weder Thumbnails noch Videodaten, nur die Titel. Es werden alle (noch nicht geratenen) Videos angezeigt.</li>
+        </ul>
       </section>
 
       <section id="data-info">
