@@ -615,9 +615,48 @@ header .subtitle {
   margin-bottom: 16px;
 }
 
-#info-footer .project-list {
-  margin-top: 4px;
+#info-footer .project-list-wrap {
+  margin-top: 8px;
   margin-bottom: 0;
+}
+
+.project-list-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  color: #6b7280;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.project-list-btn:hover {
+  border-color: #4b5563;
+  background: #273549;
+}
+
+.project-list-btn .project-list-chevron {
+  font-size: 0.65rem;
+  transition: transform 0.2s;
+}
+
+.project-list-btn.open .project-list-chevron {
+  transform: rotate(180deg);
+}
+
+.project-list-content {
+  margin-top: 8px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  color: #6b7280;
+  line-height: 1.6;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
 }
 
 #info-footer section {

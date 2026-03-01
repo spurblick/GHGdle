@@ -703,8 +703,10 @@ document.getElementById("regenerate-btn").addEventListener("click", startNewFree
 /* ── Project list (Hinweis zu den Daten) ──────────────────────────────────── */
 
 function renderProjectList() {
-  const el = document.getElementById("project-list");
-  if (!el || !videos.length) return;
+  const summaryEl = document.getElementById("project-list-summary");
+  const contentEl = document.getElementById("project-list-content");
+  const btn = document.getElementById("project-list-btn");
+  if (!summaryEl || !contentEl || !btn || !videos.length) return;
 
   const counts = {};
   for (const v of videos) {
@@ -713,10 +715,19 @@ function renderProjectList() {
   }
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  const text = sorted
+  const projectCount = sorted.length;
+  const videoCount = videos.length;
+  const fullText = sorted
     .map(([name, n]) => `${name} (${n} Video${n !== 1 ? "s" : ""})`)
     .join(", ");
-  el.textContent = "Projekte: " + (text || "–");
+
+  summaryEl.textContent = `${projectCount} Projekt${projectCount !== 1 ? "e" : ""}, ${videoCount} Video${videoCount !== 1 ? "s" : ""}`;
+  contentEl.textContent = fullText || "–";
+
+  btn.addEventListener("click", () => {
+    contentEl.classList.toggle("hidden");
+    btn.classList.toggle("open", !contentEl.classList.contains("hidden"));
+  });
 }
 
 /* ── Initialisation ────────────────────────────────────────────────────────── */
