@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GHGdle</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <a href="https://www.youtube.com/@BastiGHG" target="_blank" rel="noopener noreferrer" id="header-logo-link">
+        <img id="header-logo" src="bastighg-profile.jpg" alt="BastiGHG">
+      </a>
+      <div id="header-center">
+        <h1><span style="color:#99d9ea">GHG</span><span style="color:#c2c2c2">DLE</span></h1>
+        <p class="subtitle">Errate täglich ein BastiGHG-Video!</p>
+        <div id="header-toggles">
+          <div class="toggle-group">
+            <span class="toggle-label">Spielmodus</span>
+            <div class="seg-toggle" id="advanced-mode-toggle">
+              <button class="mode-opt active" data-mode="standard">Standard</button>
+              <button class="mode-opt" data-mode="advanced">Experte</button>
+            </div>
+          </div>
+          <div class="toggle-group">
+            <span class="toggle-label">Suchmodus</span>
+            <div class="seg-toggle" id="search-mode-toggle">
+              <button class="mode-opt active" data-mode="token">Wörter einzeln</button>
+              <button class="mode-opt" data-mode="exact">Genaue Phrase</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="header-spacer"></div>
+    </header>
+
+    <main>
+      <!-- Banner shown on win/lose -->
+      <div id="banner" class="banner hidden"></div>
+
+      <!-- First-guess prompt (hidden after first guess) -->
+      <div id="first-guess-prompt">
+        <span id="first-guess-arrow">▼</span>
+        <div>
+          <strong>Such dir ein Video aus!</strong>
+          <p>Tippe einen Titel in die Suchleiste unten und wähle dein erstes Video aus.</p>
+        </div>
+      </div>
+
+      <!-- Input area (hidden after game ends) -->
+      <div id="input-area">
+        <input type="text" id="video-input" placeholder="Video suchen..." autocomplete="off">
+      </div>
+
+      <!-- Dropdown rendered outside input, below guesses -->
+      <div id="dropdown" class="dropdown hidden"></div>
+
+      <!-- Column headers -->
+      <div id="column-headers" class="hidden">
+        <div class="col-header col-thumb"></div>
+        <div class="col-header col-title">Titel</div>
+        <div class="col-header col-char">Upload-Datum</div>
+        <div class="col-header col-char">Zickzack</div>
+        <div class="col-header col-char">Aufrufe</div>
+        <div class="col-header col-char">Länge</div>
+        <div class="col-header col-char">Projekt</div>
+        <div class="col-header col-char">Gäste</div>
+      </div>
+
+      <!-- Countdown shown after game ends -->
+      <div id="countdown-area" class="hidden">
+        <div id="countdown-row">
+          <span id="countdown-label">Nächstes Video in </span>
+          <span id="countdown"></span>
+        </div>
+        <div id="regenerate-row">
+          <span>oder hier neu generieren:</span>
+          <button type="button" id="regenerate-btn">Neues Video</button>
+        </div>
+      </div>
+
+      <!-- Guess rows (dynamically appended) -->
+      <div id="guesses"></div>
+    </main>
+
+    <!-- Game explanation -->
+    <footer id="info-footer">
+      <!-- Give-up area (hidden after game ends) -->
+      <div id="give-up-area">
+        <p id="give-up-hint">Button gedrückt halten zum Aufgeben und Lösung aufdecken:</p>
+        <button id="give-up-btn">
+          <span id="give-up-label">Aufgeben</span>
+          <span id="give-up-progress"></span>
+        </button>
+      </div>
+
+      <section id="how-to-play">
+        <h2>So funktioniert's</h2>
+        <p>Jeden Tag gibt es ein neues BastiGHG-Video zu erraten. Gib deinen Tipp über die Suchleiste ein und wähle ein Video aus.</p>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-box green"></span>
+            <span>Treffer – die Eigenschaft stimmt exakt überein.</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box orange"></span>
+            <span>Teilweise – es gibt eine Überschneidung (z.&nbsp;B. einige Gäste stimmen, ▲ noch nicht alle Gäste, ▼ zu viele Gäste).).</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box red"></span>
+            <span>Daneben – die Eigenschaft stimmt nicht überein.</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-arrow">▲ ▼</span>
+            <span>Pfeile zeigen die Richtung an: ▲ = der gesuchte Wert ist höher/neuer, ▼ = niedriger/älter.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="data-info">
+        <h2>Hinweis zu den Daten</h2>
+        <p>
+          Die Videodaten (Aufrufe, Länge, Upload-Datum) wurden automatisch
+          von YouTube abgerufen (Stand 28.02.2026). Die Gäste werden aus den Verlinkungen in
+          der Videobeschreibung ermittelt (Direktlink auf YT-Profil). Zickzack-Version und Projekt
+          wurden manuell ergänzt. Abweichungen sind möglich. Insbesondere die Gäste und Projekte
+          bei alten Videos können fehlerhaft sein.
+        </p>
+        <p id="project-list" class="project-list"></p>
+      </section>
+
+      <section id="more-games">
+        <h2>Weitere Spiele</h2>
+        <a href="https://spurblick.github.io/flagle-game/" target="_blank" rel="noopener noreferrer" class="game-card">
+          <div class="game-card-title">🚩 Flagle</div>
+          <div class="game-card-desc">Errate täglich eine Nationalflagge – Pixel für Pixel wird enthüllt, je mehr Flaggen du richtig rätst.</div>
+        </a>
+      </section>
+    </footer>
+
+    <div id="made-by">
+      <a href="https://github.com/spurblick" target="_blank" rel="noopener noreferrer" id="made-by-link">
+        <img src="spurblick.png" alt="Spurblick Studio" id="spurblick-icon">
+        <span>Made by Spurblick Studio – Data &amp; Analytics Consulting</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
